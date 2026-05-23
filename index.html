@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงปฏิบัติหน้าที่เวรประจำวัน</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8f9fa;
+            color: #000000;
+            margin: 0;
+            padding: 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: flex-start; 
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .active {
+            display: block;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        /* ดีไซน์หน้าล็อกอินให้เป็นรูปแบบบัตร (Card) มีกรอบล้อมรอบ */
+        .login-card {
+            width: 100%;
+            max-width: 420px; 
+            background-color: #ffffff;
+            border: 2px solid #cccccc; 
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+
+        /* ด้านบนแถบยาวสีแดง เขียนหัวข้อระบุลงทะเบียน และจัดวางวันเวลาด้านล่าง */
+        .login-card-header {
+            background-color: #ff0000;
+            color: #ffffff;
+            padding: 16px 12px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 17px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .login-datetime {
+            font-size: 13px;
+            font-weight: 300;
+            background-color: rgba(0, 0, 0, 0.15);
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .login-card-body {
+            padding: 20px;
+            text-align: left;
+        }
+
+        /* เส้นกั้นระหว่าง username กับ password */
+        .login-divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 15px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 12px;
+            box-sizing: border-box;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-family: 'Sarabun', sans-serif;
+            padding: 6px 14px; 
+            background-color: #e0e0e0;
+            color: #333333;
+            border: 1px solid #cccccc;
+            border-radius: 4px; 
+            cursor: pointer;
+            font-size: 14px; 
+            font-family: 'Sarabun', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: max-content;
+            max-width: 100%;
+            margin: 0 auto 25px auto;
+            border-collapse: collapse;
+            font-size: 15px; 
+            background-color: #ffffff;
+        }
+
+        th, td {
+            border: 1px solid #cccccc;
+            padding: 8px 10px; 
+            text-align: center; 
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .text-left-align {
+            text-align: left !important;
+        }
+
+        .table-header-main {
+            background-color: #ff0000;
+            color: #ffffff;
+            text-align: center;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .table-header-sub {
+            background-color: #336633;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .table-header-sub th {
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .summary-duty-header {
+            background-color: #ff0000;
+            color: #ffffff;
+            padding: 12px 15px;
+            font-size: 17px;
+            font-weight: bold;
+            margin: 15px auto 0 auto;
+            border: 1px solid #ff0000;
+            border-bottom: none; 
+            display: flex;
+            flex-direction: column; 
+            align-items: center;   
+            justify-content: center;
+            border-radius: 4px 4px 0 0; 
+            box-sizing: border-box;
+            gap: 4px;
+        }
+        
+        #page5 table {
+            margin-top: 0px !important;
+            min-width: 480px;
+        }
+
+        .blue-link {
+            color: #0000ff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .blue-link:hover {
+            color: #0000b3;
+        }
+
+        .download-xls-container {
+            margin-top: -15px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .xls-link {
+            color: #0000ff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .color-row-1 {
+            background-color: #90EE90 !important; 
+        }
+
+        .color-row-2 {
+            background-color: #ffffff !important;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .user-info-display {
+            margin: 0 auto 15px auto;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            padding: 12px;
+            background-color: #f9f9f9;
+            max-width: 400px;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .user-info-display p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="page1" class="page active">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <div class="login-title">ระบบลงทะเบียนปฏิบัติหน้าที่เวรประจำวัน</div>
+                    <div class="login-datetime" id="liveClock">กำลังโหลดเวลา...</div>
+                </div>
+                
+                <div class="login-card-body">
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label for="username">Username (T001):</label>
+                        <input type="text" id="username" placeholder="ระบุเลข T001">
+                    </div>
+                    
+                    <div class="login-divider"></div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="กรอก password">
+                    </div>
+                    
+                    <div class="button-group" style="margin-bottom: 0; padding-top: 10px;">
+                        <button type="button" onclick="checkLoginCredential()">เข้าสู่ระบบ</button>
+                        <button type="button" onclick="goToSummaryPage()">ดูข้อมูล</button>
+                    </div>
+                </div>
+            </div>
+            <p id="login-error" style="color: red; margin-top: 15px; text-align: center; font-size: 14px;"></p>
+        </div>
+
+        <div id="page2" class="page">
+            <h2>ลงทะเบียนเวรปฏิบัติหน้าที่</h2>
+            
+            <div class="form-group">
+                <label for="secretCode" style="color: #ff0000; font-weight: bold;">รหัส 6 ตัว (กรอกเพื่อเปิดสิทธิ์ลงทะเบียน/ใช้แก้ไขข้อมูล):</label>
+                <input type="text" id="secretCode" maxlength="6" placeholder="กรอกตัวเลข 6 หลัก เช่น 123456" oninput="handleSecretCodeInput()">
+            </div>
+            
+            <div class="form-group">
+                <label for="fullName">ชื่อ-นามสกุล:</label>
+                <input type="text" id="fullName" placeholder="กรอกชื่อ-นามสกุล">
+            </div>
+
+            <form id="dutyForm">
+                <table id="selectDutyTable">
+                    <thead>
+                        <tr>
+                            <th colspan="7" class="table-header-main">เวร ประจำวัน</th>
+                        </tr>
+                        <tr class="table-header-sub">
+                            <th>เลือก</th>
+                            <th>ลำดับ</th>
+                            <th>รหัส</th>
+                            <th>ชื่อเวรประจำวัน</th>
+                            <th>หมายเหตุ</th>
+                            <th>สถานที่</th> 
+                            <th>ลงทะเบียนแล้ว / รับทั้งหมด</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dutySelectTableBody">
+                        </tbody>
+                </table>
+                <div class="button-group">
+                    <button type="button" onclick="saveData()">บันทึกข้อมูล</button>
+                    <button type="button" onclick="resetForm()">กลับเมนูหลัก</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="page3" class="page">
+            <div class="success-message">คุณได้ลงทะเบียนเสร็จสิ้นแล้ว</div>
+            
+            <div class="user-info-display">
+                <p><strong>ชื่อ-นามสกุล:</strong> <span id="displayFullName"></span></p>
+                <p><strong>รหัส 6 ตัว:</strong> <span id="displaySecretCode"></span></p>
+                <p style="color: blue;"><small id="editCountInfo">*จำกัดสิทธิ์แก้ไขข้อมูลด้วยรหัสเดิมได้สูงสุด 5 ครั้ง</small></p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="7" class="table-header-main">เวร ประจำวัน</th>
+                    </tr>
+                    <tr class="table-header-sub">
+                        <th>เลือก</th>
+                        <th>ลำดับ</th>
+                        <th>รหัส</th>
+                        <th>ชื่อเวรประจำวัน</th>
+                        <th>หมายเหตุ</th>
+                        <th>สถานที่</th> 
+                        <th>ลงทะเบียนแล้ว</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableBody">
+                    </tbody>
+            </table>
+            <div class="button-group">
+                <button type="button" onclick="goToSummaryPage()">ดูข้อมูลทั้งหมด</button>
+                <button type="button" onclick="resetForm()">กลับเมนูหลัก</button>
+            </div>
+        </div>
+
+        <div id="page4" class="page">
+            <h2>ตารางสรุปข้อมูลเวรประจำวันภาพรวม</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="7" class="table-header-main">สรุปเวร ประจำวัน</th>
+                    </tr>
+                    <tr class="table-header-sub">
+                        <th>ลำดับ</th>
+                        <th>รหัส</th>
+                        <th>ชื่อเวรประจำวัน</th>
+                        <th>หมายเหตุ</th>
+                        <th>สถานที่</th> 
+                        <th>จำนวนผู้ลงชื่อ</th>
+                        <th>ช่องข้อมูล</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                    </tbody>
+            </table>
+
+            <div class="button-group">
+                <button type="button" onclick="resetForm()">กลับเมนูหลัก</button>
+            </div>
+        </div>
+
+        <div id="page5" class="page">
+            <div id="detailHeader" class="summary-duty-header">
+                </div>
+            
+            <table id="detailTable">
+                <thead>
+                    <tr class="table-header-sub">
+                        <th>ลำดับที่</th>
+                        <th style="text-align: left; min-width: 280px;">ชื่อ-นามสกุล</th>
+                        <th>สถานที่</th> 
+                    </tr>
+                </thead>
+                <tbody id="detailTableBody">
+                    </tbody>
+            </table>
+
+            <div class="download-xls-container" id="downloadXlsArea">
+                </div>
+
+            <div class="button-group">
+                <button type="button" onclick="goToSummaryPage()">ย้อนกลับตารางสรุป</button>
+                <button type="button" onclick="resetForm()">กลับเมนูหลัก</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // โครงสร้างฐานข้อมูลโควตาเวร
+        const dutyData = {
+            "1": { seq: 1, id: "a_001", name: "เวรประจำวันหน้าประตู", note: "-", location: "บริเวณโรงเรียนทั้งหมด", max: 30 },
+            "2": { seq: 2, id: "a_002", name: "เวรประจำวันรับนักเรียนเข้าออก", note: "-", location: "บริเวณโรงเรียนทั้งหมด", max: 30 },
+            "3": { seq: 3, id: "a_003", name: "เวรประจำวันรับนักเรียนสาย", note: "-", location: "บริเวณโรงเรียนทั้งหมด", max: 20 },
+            "4": { seq: 4, id: "a_004", name: "เวรประจำวันดูแลความเรียบร้อยทั่วไป", note: "-", location: "บริเวณโรงเรียนทั้งหมด", max: 25 },
+            "5": { seq: 5, id: "a_005", name: "เวรประจำวันดูแลความเรียบร้อยอาคารสถานที่", note: "-", location: "บริเวณโรงเรียนทั้งหมด", max: 30 }
+        };
+
+        // โหลดข้อมูลเก่าจากฐานข้อมูลเบราว์เซอร์ (localStorage) หากไม่มีให้ตั้งเป็นอาเรย์ว่าง
+        let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+        let currentSelectedDutyKey = ""; 
+
+        // เริ่มระนาบเวลาอัตโนมัติ
+        window.onload = function() {
+            startLiveClock();
+        };
+
+        function startLiveClock() {
+            function updateClock() {
+                const now = new Date();
+                const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+                const thaiDate = now.toLocaleDateString('th-TH', optionsDate);
+                const thaiTime = now.toLocaleTimeString('th-TH', { hour12: false });
+                
+                const clockElement = document.getElementById('liveClock');
+                if (clockElement) {
+                    clockElement.textContent = `วันนี้: ${thaiDate} | เวลา: ${thaiTime} น.`;
+                }
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function getRemainingQuota(key) {
+            const count = registeredUsers.filter(user => user.dutyKey === key).length;
+            return dutyData[key].max - count;
+        }
+
+        function getRegisteredCount(key) {
+            return registeredUsers.filter(user => user.dutyKey === key).length;
+        }
+
+        // หน้าตารางให้พนักงานเลือกสมัคร (หน้า 2)
+        function renderDutySelectTable(userObj = null) {
+            const tbody = document.getElementById('dutySelectTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            for (let key in dutyData) {
+                const item = dutyData[key];
+                const remaining = getRemainingQuota(key);
+                const bgClass = (item.seq % 2 !== 0) ? 'color-row-1' : 'color-row-2';
+                
+                // ตรวจเช็คกรณีผู้ใช้เก่าเข้ามาแก้ไขข้อมูลให้ติ๊กเวรเดิมของเขาไว้ และไม่โดนบล็อกโควตาตัวเอง
+                let isChecked = "";
+                let isFull = remaining <= 0 ? 'disabled' : '';
+                
+                if (userObj && userObj.dutyKey === key) {
+                    isChecked = "checked";
+                    isFull = ""; // ปลดล็อกให้กดซ้ำที่เดิมได้
+                }
+
+                const rowHtml = `
+                    <tr class="${bgClass}">
+                        <td><input type="radio" name="dutySelect" value="${key}" ${isChecked} ${isFull} required></td>
+                        <td>${item.seq}</td>
+                        <td>${item.id}</td>
+                        <td class="text-left-align">${item.name}</td>
+                        <td>${item.note}</td>
+                        <td>รร.</td>
+                        <td><strong>${getRegisteredCount(key)} / ${item.max}</strong></td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', rowHtml);
+            }
+        }
+
+        // หากกรอกรหัส 6 หลักเดิม ระบบจะดึงชื่อ-นามสกุล และเวรเก่าขึ้นมาแสดงให้อัตโนมัติ (อำนวยความสะดวก)
+        function handleSecretCodeInput() {
+            const code = document.getElementById('secretCode').value.trim();
+            const currentUsername = document.getElementById('username').value.trim().toUpperCase();
+            if (code.length === 6) {
+                const user = registeredUsers.find(u => u.username === currentUsername);
+                if (user && user.secretCode === code) {
+                    document.getElementById('fullName').value = user.fullName;
+                    renderDutySelectTable(user);
+                }
+            }
+        }
+
+        // ล็อกอินระบบ บัตร T001 - T999
+        function checkLoginCredential() {
+            const userInput = document.getElementById('username').value.trim().toUpperCase();
+            const passInput = document.getElementById('password').value.trim();
+            const errorElement = document.getElementById('login-error');
+
+            const tPattern = /^T\d{3}$/;
+            
+            if (!tPattern.test(userInput) || userInput === "T000") {
+                errorElement.textContent = 'Username ไม่ถูกต้อง! (ต้องอยู่ในช่วง T001 - T999)';
+                return;
+            }
+
+            if (passInput === '111') {
+                errorElement.textContent = '';
+
+                // ตรวจสอบว่า username นี้เคยลงทะเบียนไว้แล้วหรือไม่
+                const existingByUsername = registeredUsers.find(u => u.username === userInput);
+                if (existingByUsername) {
+                    // ถามรหัส 6 ตัวที่ตั้งไว้ตั้งแต่แรก
+                    const inputCode = prompt(`Username "${userInput}" เคยลงทะเบียนไว้แล้ว\nกรุณากรอกรหัส 6 ตัวที่คุณตั้งไว้เพื่อยืนยันตัวตน:`);
+                    if (inputCode === null) return; // กด Cancel
+                    if (inputCode.trim() !== existingByUsername.secretCode) {
+                        errorElement.textContent = 'รหัส 6 ตัวไม่ถูกต้อง! ไม่สามารถเข้าสู่ระบบได้';
+                        return;
+                    }
+                    // รหัสถูกต้อง โหลดข้อมูลเดิมมาแสดง
+                    renderDutySelectTable(existingByUsername);
+                    document.getElementById('secretCode').value = existingByUsername.secretCode;
+                    document.getElementById('fullName').value = existingByUsername.fullName;
+                } else {
+                    renderDutySelectTable();
+                }
+                switchPage('page2');
+            } else {
+                errorElement.textContent = 'Password ไม่ถูกต้อง!';
+            }
+        }
+
+        // บันทึกและซิงค์ฐานข้อมูล LocalStorage
+        function saveData() {
+            const secretCode = document.getElementById('secretCode').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const selectedRadio = document.querySelector('input[name="dutySelect"]:checked');
+            const currentUsername = document.getElementById('username').value.trim().toUpperCase();
+
+            const numberPattern = /^\d{6}$/;
+            if (!numberPattern.test(secretCode)) {
+                alert('กรุณากรอกรหัส 6 ตัวให้ครบถ้วนและถูกต้อง (ต้องเป็นตัวเลข 6 หลัก) เพื่อเปิดสิทธิ์ใช้งานในระบบ!');
+                return;
+            }
+
+            if (!fullName) {
+                alert('กรุณากรอกชื่อ-นามสกุล');
+                return;
+            }
+
+            if (!selectedRadio) {
+                alert('กรุณาเลือกเวรปฏิบัติหน้าที่');
+                return;
+            }
+
+            const selectedValue = selectedRadio.value;
+            const existingUserIndex = registeredUsers.findIndex(u => u.username === currentUsername);
+
+            let currentEditCount = 0;
+
+            if (existingUserIndex !== -1) {
+                let currentUser = registeredUsers[existingUserIndex];
+                currentEditCount = currentUser.editCount;
+                
+                // จำกัดการแก้ไขย้ายเวรได้แค่ 5 ครั้ง
+                if (currentUser.editCount >= 5 && currentUser.dutyKey !== selectedValue) {
+                    alert('ขออภัย คุณเปลี่ยนการเลือกด้วยรหัสนี้ครบโควตา 5 ครั้งแล้ว ไม่สามารถเปลี่ยนได้อีก!');
+                    return;
+                }
+
+                if (currentUser.dutyKey !== selectedValue && getRemainingQuota(selectedValue) <= 0) {
+                    alert('ขออภัย เวรปฏิบัติหน้าที่ที่ต้องการย้ายไปเต็มแล้ว!');
+                    return;
+                }
+
+                currentUser.fullName = fullName;
+                currentUser.secretCode = secretCode;
+                if (currentUser.dutyKey !== selectedValue) {
+                    currentUser.dutyKey = selectedValue;
+                    currentUser.editCount += 1; 
+                    currentEditCount = currentUser.editCount;
+                }
+                alert(`คุณได้ใช้รหัสเดิมเข้ามาอัปเดตข้อมูลสำเร็จ! (เปลี่ยนเวรไปแล้ว ${currentUser.editCount}/5 ครั้ง)`);
+
+            } else {
+                if (getRemainingQuota(selectedValue) <= 0) {
+                    alert('ขออภัย เวรปฏิบัติหน้าที่นี้เต็มแล้ว');
+                    return;
+                }
+
+                // สมาชิกใหม่ซิงๆ เริ่มนับ 0 ครั้ง
+                registeredUsers.push({
+                    username: currentUsername,
+                    secretCode: secretCode,
+                    fullName: fullName,
+                    dutyKey: selectedValue,
+                    editCount: 0
+                });
+            }
+
+            // เขียนทับลงฐานข้อมูลเบราว์เซอร์จริง
+            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+            
+            document.getElementById('displayFullName').textContent = fullName;
+            document.getElementById('displaySecretCode').textContent = secretCode;
+            document.getElementById('editCountInfo').textContent = `*คุณเปลี่ยนข้อมูลไปแล้วทั้งหมด ${currentEditCount} / 5 ครั้ง`;
+
+            // เรนเดอร์หน้าเสร็จสิ้น (หน้า 3)
+            const resultBody = document.getElementById('resultTableBody');
+            if(resultBody) {
+                resultBody.innerHTML = '';
+                for (let key in dutyData) {
+                    const item = dutyData[key];
+                    const isChecked = (key === selectedValue) ? 'checked' : '';
+                    const bgClass = (item.seq % 2 !== 0) ? 'color-row-1' : 'color-row-2';
+                    const remaining = getRemainingQuota(key);
+                    
+                    const rowHtml = `
+                        <tr class="${bgClass}">
+                            <td><input type="radio" disabled ${isChecked}></td>
+                            <td>${item.seq}</td>
+                            <td>${item.id}</td>
+                            <td class="text-left-align">${item.name}</td>
+                            <td>${item.note}</td>
+                            <td>รร.</td>
+                            <td><strong>${getRegisteredCount(key)} / ${item.max}</strong></td>
+                        </tr>
+                    `;
+                    resultBody.insertAdjacentHTML('beforeend', rowHtml);
+                }
+            }
+
+            switchPage('page3');
+        }
+
+        // หน้าสรุปภาพรวมตารางทั้งหมด (หน้า 4)
+        function goToSummaryPage() {
+            const tbody = document.getElementById('summaryTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            for (let key in dutyData) {
+                const item = dutyData[key];
+                const count = getRegisteredCount(key);
+                const bgClass = (item.seq % 2 !== 0) ? 'color-row-1' : 'color-row-2';
+
+                const rowHtml = `
+                    <tr class="${bgClass}">
+                        <td>${item.seq}</td>
+                        <td>${item.id}</td>
+                        <td class="text-left-align">${item.name}</td>
+                        <td>${item.note}</td>
+                        <td>รร.</td>
+                        <td><strong>${count} คน</strong></td>
+                        <td>
+                            <span class="blue-link" onclick="viewDutyDetail('${key}')">ดูข้อมูล</span>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', rowHtml);
+            }
+
+            switchPage('page4');
+        }
+
+        // หน้าแสดงรายชื่อแยกตามกิจกรรม (หน้า 5) หัวแดงติดตาราง ข้อมูลชิดซ้าย
+        function viewDutyDetail(key) {
+            currentSelectedDutyKey = key;
+            const duty = dutyData[key];
+            const usersInDuty = registeredUsers.filter(user => user.dutyKey === key);
+            const totalPeople = usersInDuty.length;
+
+            const headerBox = document.getElementById('detailHeader');
+            headerBox.innerHTML = `
+                <div>รหัส: ${duty.id} — ชื่อ: ${duty.name}</div>
+                <div style="font-size: 15px; font-weight: normal; margin-top: 2px;">จำนวนที่ลงทะเบียนทั้งหมด: ${totalPeople} คน</div>
+            `;
+
+            const detailTbody = document.getElementById('detailTableBody');
+            detailTbody.innerHTML = '';
+
+            if(usersInDuty.length === 0) {
+                detailTbody.innerHTML = `
+                    <tr class="color-row-2">
+                        <td colspan="3" style="color: #777777; padding: 15px;">ยังไม่มีรายชื่อผู้เลือกเวรปฏิบัติหน้าที่นี้</td>
+                    </tr>
+                `;
+            } else {
+                usersInDuty.forEach((user, index) => {
+                    const bgClass = ((index + 1) % 2 !== 0) ? 'color-row-1' : 'color-row-2';
+                    const rowHtml = `
+                        <tr class="${bgClass}">
+                            <td>${index + 1}</td>
+                            <td class="text-left-align">${user.fullName}</td>
+                            <td>รร.</td>
+                        </tr>
+                    `;
+                    detailTbody.insertAdjacentHTML('beforeend', rowHtml);
+                });
+            }
+
+            const tableWidth = document.getElementById('detailTable').offsetWidth;
+            if(tableWidth > 0) {
+                headerBox.style.width = tableWidth + "px";
+            } else {
+                headerBox.style.width = "100%";
+                headerBox.style.maxWidth = "700px";
+            }
+
+            const downloadArea = document.getElementById('downloadXlsArea');
+            downloadArea.innerHTML = `
+                ดาวน์โหลด : <span class="xls-link" onclick="downloadSingleExcel()">${duty.name}.xls</span>
+            `;
+
+            switchPage('page5');
+            
+            setTimeout(() => {
+                const updatedWidth = document.getElementById('detailTable').offsetWidth;
+                if(updatedWidth > 0) {
+                    headerBox.style.width = updatedWidth + "px";
+                }
+            }, 20);
+        }
+
+        // ดาวน์โหลดข้อมูลออกมาเป็นไฟล์ Excel ได้จริง
+        function downloadSingleExcel() {
+            if (!currentSelectedDutyKey) return;
+            
+            const duty = dutyData[currentSelectedDutyKey];
+            const usersInDuty = registeredUsers.filter(user => user.dutyKey === currentSelectedDutyKey);
+            
+            let csvContent = "\uFEFF"; 
+            csvContent += `"${duty.id} - ${duty.name} (จำนวนรวม ${usersInDuty.length} / ${duty.max} คน)"\n`;
+            csvContent += `"ลำดับที่","ชื่อ-นามสกุล","รหัส 6 ตัว","สถานที่"\n`;
+            
+            if (usersInDuty.length === 0) {
+                csvContent += `"-","ยังไม่มีผู้ลงทะเบียนในระบบ","-","-"\n`;
+            } else {
+                usersInDuty.forEach((user, index) => {
+                    csvContent += `"${index + 1}","${user.fullName}","${user.secretCode}","รร."\n`;
+                });
+            }
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const dataUrl = URL.createObjectURL(blob);
+            
+            const downloadLink = document.createElement("a");
+            downloadLink.href = dataUrl;
+            downloadLink.download = `${duty.name}.xls`;
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        // ตัวสลับหน้าเว็บเพจย่อยทำงานสมบูรณ์
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+
+        // เคลียร์ค่าฟอร์มกลับสู่เมนูหลักสำเร็จ
+        function resetForm() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            const fullNameInput = document.getElementById('fullName');
+            const secretCodeInput = document.getElementById('secretCode');
+            if(fullNameInput) fullNameInput.value = '';
+            if(secretCodeInput) secretCodeInput.value = '';
+            
+            const checkedRadio = document.querySelector('input[name="dutySelect"]:checked');
+            if (checkedRadio) checkedRadio.checked = false;
+            
+            switchPage('page1');
+        }
+    </script>
+</body>
+</html>
